@@ -1,21 +1,188 @@
 [gd_scene format=3 uid="uid://bwigdepwsish4"]
 
 [ext_resource type="Script" uid="uid://pms3lul0c3k2" path="res://Scripts/player.gd" id="1_cvnsp"]
-[ext_resource type="Texture2D" uid="uid://t2ytmj8vas27" path="res://icon.svg" id="1_v0iea"]
+[ext_resource type="Texture2D" uid="uid://b7wvaadiglp8t" path="res://Art/anims/Fall_1/fallanim1.png" id="2_pu2lt"]
+[ext_resource type="Texture2D" uid="uid://cewg7vy0dat1d" path="res://Art/anims/Fall_1/fallanim2.png" id="3_ukyrk"]
+[ext_resource type="Texture2D" uid="uid://b8iqgamyybkt" path="res://Art/Player/New_player1.png" id="4_7dp3o"]
+[ext_resource type="Texture2D" uid="uid://c8tycojkwcs5i" path="res://Art/anims/Ded/Ded_jump_V3.png" id="5_pu2lt"]
+[ext_resource type="Texture2D" uid="uid://cp8fij06iijp6" path="res://Art/anims/Run_1/shiftanim1.png" id="8_7dp3o"]
+[ext_resource type="Texture2D" uid="uid://dpjop8vhd01cp" path="res://Art/anims/Run_1/shiftanim2.png" id="9_h4iuc"]
+[ext_resource type="Texture2D" uid="uid://cobbpwa8hjcbu" path="res://Art/anims/Run_1/shiftanim3.png" id="10_fd4e3"]
+[ext_resource type="Texture2D" uid="uid://yuewq7jayvlt" path="res://Art/anims/Ded/Ded_walk.png" id="10_tx1dd"]
+[ext_resource type="Texture2D" uid="uid://ct2lh6d5a500r" path="res://Art/anims/Slide_1/slideanim1.png" id="12_h4iuc"]
+[ext_resource type="Texture2D" uid="uid://c0aryrf3jq0nn" path="res://Art/anims/Slide_1/slideanim2.png" id="13_fd4e3"]
+[ext_resource type="Texture2D" uid="uid://bc6sc73e4awaf" path="res://Art/anims/Slide_1/slideanim3.png" id="14_qqcod"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6hbwq"]
-size = Vector2(18, 18)
+size = Vector2(11, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h4iuc"]
+size = Vector2(25, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ukyrk"]
+atlas = ExtResource("5_pu2lt")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7dp3o"]
+atlas = ExtResource("5_pu2lt")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h4iuc"]
+atlas = ExtResource("5_pu2lt")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fd4e3"]
+atlas = ExtResource("5_pu2lt")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vfarp"]
+atlas = ExtResource("10_tx1dd")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y6uwr"]
+atlas = ExtResource("10_tx1dd")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_83xs0"]
+atlas = ExtResource("10_tx1dd")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ypfnu"]
+atlas = ExtResource("10_tx1dd")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xuaoq"]
+atlas = ExtResource("10_tx1dd")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wohnl"]
+atlas = ExtResource("10_tx1dd")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36dho"]
+atlas = ExtResource("10_tx1dd")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6hbwq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pu2lt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ukyrk")
+}],
+"loop": 1,
+"name": &"fall",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_7dp3o")
+}],
+"loop": 0,
+"name": &"idle",
+"speed": 0.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ukyrk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7dp3o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h4iuc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fd4e3")
+}],
+"loop": 0,
+"name": &"jump_static",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_7dp3o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_h4iuc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_fd4e3")
+}],
+"loop": 1,
+"name": &"run",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_h4iuc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_fd4e3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_qqcod")
+}],
+"loop": 1,
+"name": &"sliding",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vfarp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y6uwr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_83xs0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ypfnu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xuaoq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wohnl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36dho")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 5.0
+}]
 
 [node name="Player" type="Node2D" unique_id=1711016474]
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1338898343]
 script = ExtResource("1_cvnsp")
-dynamic_jump_height = true
+movement = true
+jumping = true
 
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=1219855924]
-scale = Vector2(0.15, 0.15)
-texture = ExtResource("1_v0iea")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=1455767105]
-scale = Vector2(1.065, 1.065)
+[node name="CollisionShape2D-stand" type="CollisionShape2D" parent="CharacterBody2D" unique_id=1455767105]
+visible = false
+position = Vector2(1.5, 1)
 shape = SubResource("RectangleShape2D_6hbwq")
+
+[node name="CollisionShape2D-slide" type="CollisionShape2D" parent="CharacterBody2D" unique_id=369092495]
+visible = false
+position = Vector2(-5.5, 7)
+shape = SubResource("RectangleShape2D_h4iuc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=466650388]
+sprite_frames = SubResource("SpriteFrames_6hbwq")
+animation = &"jump_static"
+frame_progress = 1.0
+flip_h = true
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=983994315]
+position = Vector2(0, -15)
+zoom = Vector2(0.8, 0.8)
+process_callback = 0
+position_smoothing_enabled = true
+position_smoothing_speed = 16.0
+drag_vertical_enabled = true

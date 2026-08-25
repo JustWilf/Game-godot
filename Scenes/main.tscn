@@ -1,20 +1,53 @@
 [gd_scene format=3 uid="uid://da3xnx7jnfecb"]
 
 [ext_resource type="PackedScene" uid="uid://bwigdepwsish4" path="res://Scenes/player.tscn" id="1_bo1nx"]
-[ext_resource type="PackedScene" uid="uid://dec6v4o50m5e0" path="res://Scenes/floor.tscn" id="2_8gbba"]
+[ext_resource type="PackedScene" uid="uid://dec6v4o50m5e0" path="res://Scenes/Level design/floor.tscn" id="2_8gbba"]
+[ext_resource type="PackedScene" uid="uid://cc5te156nro8p" path="res://Scenes/Level design/wall.tscn" id="3_8gbba"]
 
 [node name="Main" type="Node2D" unique_id=2007678628]
 
 [node name="Player" parent="." unique_id=1711016474 instance=ExtResource("1_bo1nx")]
-position = Vector2(65, 67)
+position = Vector2(106, -206)
 
 [node name="Floor" parent="." unique_id=550480650 instance=ExtResource("2_8gbba")]
-position = Vector2(156, 166)
+position = Vector2(32, 245)
 
-[node name="Floor2" parent="." unique_id=538993456 instance=ExtResource("2_8gbba")]
-position = Vector2(261, 131)
-scale = Vector2(1.28, 1)
+[node name="Floor2" parent="." unique_id=1061631593 instance=ExtResource("2_8gbba")]
+position = Vector2(160, 245)
 
-[node name="Floor3" parent="." unique_id=840552196 instance=ExtResource("2_8gbba")]
-position = Vector2(63, 146)
-scale = Vector2(1.4, 1)
+[node name="Floor4" parent="." unique_id=1334571133 instance=ExtResource("2_8gbba")]
+position = Vector2(224, 245)
+
+[node name="Floor5" parent="." unique_id=2041000696 instance=ExtResource("2_8gbba")]
+position = Vector2(281, 226)
+
+[node name="Floor3" parent="." unique_id=1723466185 instance=ExtResource("2_8gbba")]
+position = Vector2(96, 245)
+
+[node name="Wall" parent="." unique_id=626144401 instance=ExtResource("3_8gbba")]
+position = Vector2(11, 220)
+scale = Vector2(-1, 1)
+
+[node name="Wall2" parent="." unique_id=1653153222 instance=ExtResource("3_8gbba")]
+position = Vector2(11, 188)
+scale = Vector2(-1, 1)
+
+[node name="Wall3" parent="." unique_id=1219650920 instance=ExtResource("3_8gbba")]
+position = Vector2(11, 156)
+scale = Vector2(-1, 1)
+
+[node name="Wall4" parent="." unique_id=104997376 instance=ExtResource("3_8gbba")]
+position = Vector2(11, 124)
+scale = Vector2(-1, 1)
+
+[node name="Wall5" parent="." unique_id=779669313 instance=ExtResource("3_8gbba")]
+position = Vector2(11, 92)
+scale = Vector2(-1, 1)
+
+[node name="Wall6" parent="." unique_id=1370332942 instance=ExtResource("3_8gbba")]
+position = Vector2(11, 60)
+scale = Vector2(-1, 1)
+
+[node name="Wall7" parent="." unique_id=1253641285 instance=ExtResource("3_8gbba")]
+position = Vector2(11, 28)
+scale = Vector2(-1, 1)
