@@ -1,69 +1,138 @@
 extends CharacterBody2D
 
 
-@export_enum("Left", "Right") var direction: int = 0
-@export var movement: bool = false
+@export_enum("Left", "Right") var direction: int = 1
+@export var speed: float = 100.0
+
+@export_group("Camera limits")
+@export var minus_x_limit: float = 0.0
+@export var minus_y_limit: float = -300.0
+@export var x_limit: float = 300.0
+@export var y_limit: float = 300.0
+
+@export_group("Gravity")
+@export var gravity: float = 600.0
+@export var max_fall_speed: float = 1000.0
+
+@export_group("Movement")
+@export var walking: bool = false
 @export var jumping: bool = false
 @export var running: bool = false
 @export var dashing: bool = false
 @export var sliding: bool = false
 @export var dynamic_jump_height: bool = false
 @export var double_jump: bool = false
+@export var wall_jump: bool = false
 @export var god_jump: bool = false
-@export var max_fall_speed: float = 1000.0
-@export var speed: float = 100.0
+
+@export_group("Jumping", "jump_")
 @export var jump_static_strength: float = 230.0
 @export var jump_boost_strength: float = 8.0
-@export var jump_boost_time: float = 0.25
+@export var jump_boost_time_limit: float = 0.25
+@export var jump_cayot_koef: float = 1.0
+@export var jump_buffer_time: float = 0.07
+
+@export_group("Dashing", "dash_")
 @export var dash_strength: float = 250.0
-@export var dash_coldown: float = 0.3
-@export var dash_time: float = 0.2
+@export var dash_max_time: float = 0.45
+@export var dash_min_time: float = 0.25
+@export var dash_coldown: float = 0.35
+
+@export_group("Sliding", "slide_")
+@export var slide_strength: float = 250.0
+@export var slide_min_time: float = 0.3
+@export var slide_max_time: float = 0.45
+@export var slide_coldown: float = 1.5
+
+@export_group("Wall Sliding", "wall_slide_")
+@export var wall_slide_time: float = 0.4
+@export var wall_slide_coldown: float = 0.2
+
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var col_stand: CollisionShape2D = $"CollisionShape2D-stand"
 @onready var col_slide: CollisionShape2D = $"CollisionShape2D-slide"
 @onready var camera: Camera2D = $Camera2D
+@onready var ceiling_checker: Area2D = $Area2D
 
-var gravity: float = 600.0
-var real_jump_boost_time: float
+var move_koeff: float
 var cayot_limit: float
+
+var real_direction: float
+var real_jump_boost_time: float
+var real_dash_coldown: float
+var real_slide_coldown: float
+var real_wall_slide_coldown: float
+
 var can_dash: bool = false
 var can_double_jump: bool = false
-var real_dash_coldown: float
 
 var jump_buffer_timer: float
 var jump_timer: float
 var cayot_timer: float
 var dash_timer: float
+var slide_timer: float
+var wall_slide_timer: float
 
+var not_dash_and_slide: bool
+var is_jump_boosting: bool = false
 var is_running: bool = false
 var is_dashing: bool = false
 var is_sliding: bool = false
+var is_crouched: bool = false
+var want_to_stand: bool = false
+var is_wall_sliding: bool = false
 var was_jump_pressed_in_frame: bool = false
 
 func _ready() -> void:
-	_set_camera_limit(0, -1000, 1078, 255)
+	_set_camera_limit(minus_x_limit, minus_y_limit, x_limit, y_limit)
 
 func _physics_process(delta: float) -> void:
-	_update_timers(delta)
-	if not is_dashing and not is_sliding:
-		_direction()
-	if movement and not is_dashing and not is_sliding:
-		_movement()
-	if jumping and not is_dashing and not is_sliding:
-		_jumping(delta)
-	if double_jump and not is_dashing and not is_sliding:
-		_double_jump()
-	if dashing and not is_sliding:
-		_dashing(delta)
+	_direction()
+	_update_fields(delta)
 	
-	_gravity(delta)
+	not_dash_and_slide = not (is_dashing or is_sliding)
+	if not_dash_and_slide and not is_wall_sliding:
+		if walking:
+			_walk_and_run()
+		if jumping:
+			_jumping(delta)
+		if double_jump:
+			_double_jump()
+	if not_dash_and_slide and wall_jump:
+		_wall_jump(delta)
+	if not (is_sliding or is_wall_sliding) and dashing:
+		_dashing(delta)
+	if not (is_dashing or is_wall_sliding):
+		if sliding:
+			_crouch_update()
+			_sliding(delta)
+		_gravity(delta)
 	move_and_slide()
-	update_animation()
+	
+	_update_animation()
 
-func _update_timers(delta: float) -> void:
-	real_dash_coldown -= delta
+func _direction() -> void:
+	direction = 0 if velocity.x > 0.0 else 1 if velocity.x < 0.0 else direction
+	sprite.flip_h = direction
+	col_stand.position.x = -0.5 if direction else 1.5
+	col_slide.position.x = 5.5 if direction else -5.5
+	ceiling_checker.position.x = 0.0 if direction else -3.0
+
+func _update_fields(delta: float) -> void:
+	real_jump_boost_time = jump_boost_time_limit / 1.5 if is_running else jump_boost_time_limit
+	real_direction = -1.0 if direction else 1.0
+	cayot_limit = (0.1 if is_running else 0.07) * jump_cayot_koef
+	move_koeff = 1.0
+	
 	was_jump_pressed_in_frame = false
+	is_jump_boosting = false
+	is_running = false
+	
+	real_dash_coldown -= delta
+	real_slide_coldown -= delta
+	real_wall_slide_coldown -= delta
+	
 	if is_on_floor():
 		cayot_timer = 0.0
 		can_dash = true
@@ -71,39 +140,50 @@ func _update_timers(delta: float) -> void:
 	else:
 		cayot_timer += delta
 		jump_buffer_timer -= delta
+	
+	if is_dashing:
+		dash_timer += delta
+	else:
+		dash_timer = 0.0
+	
+	if is_sliding:
+		slide_timer += delta
+	else:
+		slide_timer = 0.0
+	
+	if is_wall_sliding:
+		wall_slide_timer += delta
+	else:
+		wall_slide_timer = 0.0
 
-func _direction() -> void:
-	direction = 0 if velocity.x > 0 else 1 if velocity.x < 0 else direction
-	sprite.flip_h = bool(direction)
-	col_stand.position.x = -0.5 if direction else 1.5
-	col_slide.position.x = 5.5 if direction else -5.5
-
-func _movement() -> void:
-	var move_koeff: float = 1.0
+func _walk_and_run() -> void:
 	if Input.is_action_pressed("run") and running:
 		is_running = true
-		move_koeff = 1.5 if velocity.y <= 0 else 1.2
-	else:
-		is_running = false
+		move_koeff = 1.5 if velocity.y <= 0.0 else 1.2
+	
 	velocity.x = speed * move_koeff * Input.get_axis("left", "right")
 
 func _jumping(delta: float) -> void:
-	real_jump_boost_time = jump_boost_time / 1.5 if is_running else jump_boost_time
-	cayot_limit = 0.1 if is_running else 0.07
 	if Input.is_action_just_pressed("jump"):
-		jump_buffer_timer = 0.07
-	if (god_jump and Input.is_action_just_pressed("jump")) or (cayot_timer <= cayot_limit and jump_buffer_timer >= 0.0):
+		jump_buffer_timer = jump_buffer_time
+	
+	if cayot_timer <= cayot_limit and jump_buffer_timer >= 0.0:
 		was_jump_pressed_in_frame = true
 		cayot_timer += 1.0
 		jump_buffer_timer -= 1.0
 		jump_timer = 0.0
-		velocity.y = -jump_static_strength if not god_jump else -jump_static_strength + gravity*0.8 * delta
+		velocity.y = -jump_static_strength
+	elif Input.is_action_just_pressed("jump") and god_jump:
+		velocity.y = -jump_static_strength + gravity*0.8 * delta
+	
 	elif Input.is_action_pressed("jump") and dynamic_jump_height and can_double_jump:
 		jump_timer += delta
-		if jump_timer >= 0.117 and jump_timer <= real_jump_boost_time and velocity.y < 0:
+		if jump_timer >= 0.117 and jump_timer <= real_jump_boost_time and velocity.y < 0.0:
+			is_jump_boosting = true
 			velocity.y -= (1.0 - clamp(jump_timer / real_jump_boost_time, 0.0, 1.0)) * jump_boost_strength * gravity * delta
+	
 	elif Input.is_action_just_released("jump") and can_double_jump:
-		if jump_timer >= 0.117 and velocity.y < 0:
+		if jump_timer >= 0.117 and velocity.y < 0.0:
 			velocity.y *= 0.8
 		jump_timer += 1.0
 
@@ -113,12 +193,9 @@ func _dashing(delta: float) -> void:
 		can_dash = false
 		real_dash_coldown = dash_coldown
 		velocity.y = 0.0
-		velocity.x = dash_strength * (-1.0 if direction else 1.0)
-	if is_dashing:
-		dash_timer += delta
-	else:
-		dash_timer = 0.0
-	if dash_timer > dash_time:
+		velocity.x = dash_strength * real_direction
+	
+	if is_dashing and (dash_timer >= dash_max_time or (not Input.is_action_pressed("dash") and dash_timer >= dash_min_time)):
 		is_dashing = false
 
 func _double_jump() -> void:
@@ -126,21 +203,55 @@ func _double_jump() -> void:
 		can_double_jump = false
 		velocity.y = -jump_static_strength
 
-func _gravity(delta: float) -> void:
-	if not is_dashing:
-		velocity.y += gravity * delta
-		velocity.y = minf(velocity.y, max_fall_speed)
+func _sliding(delta: float) -> void:
+	if Input.is_action_just_pressed("slide") and is_on_floor() and is_running and velocity.x != 0.0 and not is_sliding and real_slide_coldown <= 0.0:
+		is_sliding = true
+		real_slide_coldown = slide_coldown
+		_set_slide_col(true)
+		velocity.x = slide_strength * real_direction
+	
+	want_to_stand = slide_timer >= slide_max_time or (not Input.is_action_pressed("slide") and slide_timer >= slide_min_time)
+	if is_crouched and want_to_stand:
+		velocity.x = slide_strength * real_direction
+	if is_sliding and is_on_floor() and not is_crouched and want_to_stand:
+		is_sliding = false
+		_set_slide_col(false)
 
-func update_animation() -> void:
-	if is_sliding:
-		sprite.play("sliding")
+func _crouch_update() -> void:
+	is_crouched = false
+	for body in ceiling_checker.get_overlapping_bodies():
+		if body == self or is_ancestor_of(body):
+			continue
+		is_crouched = true
+		break
+
+func _wall_jump(delta: float) -> void:
+	if is_on_wall_only() and not is_wall_sliding and real_wall_slide_coldown <= 0.0 and ((get_wall_normal().x < 0.0 and Input.is_action_pressed("right")) or (get_wall_normal().x > 0.0 and Input.is_action_pressed("left"))):
+		is_wall_sliding = true
+		real_wall_slide_coldown = wall_slide_coldown
+		velocity.x = 0.0
+		velocity.y = 0.0
+	if is_wall_sliding:
+		velocity.y = gravity*7 * delta
+		if wall_slide_timer >= wall_slide_time or is_on_floor():
+			is_wall_sliding = false
+
+func _gravity(delta: float) -> void:
+	velocity.y += gravity * delta
+	velocity.y = minf(velocity.y, max_fall_speed)
+
+func _update_animation() -> void:
+	if is_dashing:
+		sprite.play("dash")
+	elif is_sliding:
+		sprite.play("slide")
 	elif not is_on_floor():
 		if velocity.y < 0.0:
-			sprite.play("jump_static")
-		#else:
-			#sprite.play("fall")
+			sprite.play("jump_boost" if is_jump_boosting else "jump_static")
+		elif velocity.y != 0.0:
+			sprite.play("fall")
 	elif velocity.x != 0.0:
-		sprite.play("walk" if not is_running else "run")
+		sprite.play("run" if is_running else "walk")
 	else:
 		sprite.play("idle")
 
@@ -150,3 +261,7 @@ func _set_camera_limit(left: int, top: int, right: int, bottom: int) -> void:
 	camera.limit_right = right
 	camera.limit_bottom = bottom
 	camera.reset_smoothing()
+
+func _set_slide_col(enable: bool) -> void:
+	col_slide.disabled = not enable
+	col_stand.disabled = enable

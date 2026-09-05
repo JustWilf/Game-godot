@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Learn-game"
+config/name="Try to trust"
 run/main_scene="uid://da3xnx7jnfecb"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"

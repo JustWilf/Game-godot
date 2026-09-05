@@ -3,11 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://bwigdepwsish4" path="res://Scenes/player.tscn" id="1_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://dec6v4o50m5e0" path="res://Scenes/Level design/floor.tscn" id="2_8gbba"]
 [ext_resource type="PackedScene" uid="uid://cc5te156nro8p" path="res://Scenes/Level design/wall.tscn" id="3_8gbba"]
+[ext_resource type="PackedScene" uid="uid://dhb1vbrjk3y11" path="res://Scenes/cryst.tscn" id="4_jjvhh"]
 
 [node name="Main" type="Node2D" unique_id=2007678628]
-
-[node name="Player" parent="." unique_id=1711016474 instance=ExtResource("1_bo1nx")]
-position = Vector2(106, -206)
 
 [node name="Floor" parent="." unique_id=550480650 instance=ExtResource("2_8gbba")]
 position = Vector2(32, 245)
@@ -18,8 +16,17 @@ position = Vector2(160, 245)
 [node name="Floor4" parent="." unique_id=1334571133 instance=ExtResource("2_8gbba")]
 position = Vector2(224, 245)
 
+[node name="Floor6" parent="." unique_id=2118090447 instance=ExtResource("2_8gbba")]
+position = Vector2(287, 245)
+
+[node name="Floor7" parent="." unique_id=977542094 instance=ExtResource("2_8gbba")]
+position = Vector2(351, 245)
+
 [node name="Floor5" parent="." unique_id=2041000696 instance=ExtResource("2_8gbba")]
-position = Vector2(281, 226)
+position = Vector2(129, 209)
+
+[node name="Floor8" parent="." unique_id=1826893222 instance=ExtResource("2_8gbba")]
+position = Vector2(193, 209)
 
 [node name="Floor3" parent="." unique_id=1723466185 instance=ExtResource("2_8gbba")]
 position = Vector2(96, 245)
@@ -51,3 +58,9 @@ scale = Vector2(-1, 1)
 [node name="Wall7" parent="." unique_id=1253641285 instance=ExtResource("3_8gbba")]
 position = Vector2(11, 28)
 scale = Vector2(-1, 1)
+
+[node name="Cryst" parent="." unique_id=1847982162 instance=ExtResource("4_jjvhh")]
+position = Vector2(212, 222)
+
+[node name="Player" parent="." unique_id=1711016474 instance=ExtResource("1_bo1nx")]
+position = Vector2(163, 125)
