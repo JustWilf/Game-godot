@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://7weskuxiauga"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cml70"]
+bg_color = Color(0.24971235, 0.24754268, 0.2507715, 1)
+
+[node name="Menu" type="Node2D" unique_id=48605719]
+
+[node name="Control" type="Control" parent="." unique_id=289619387]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 320.0
+offset_bottom = 180.0
+
+[node name="Button" type="Button" parent="Control" unique_id=604898599]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -18.0
+offset_top = -40.0
+offset_right = 17.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxFlat_cml70")
+text = "Выйти"

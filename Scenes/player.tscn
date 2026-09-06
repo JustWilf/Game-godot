@@ -152,6 +152,16 @@ animations = [{
 "loop": 1,
 "name": &"walk",
 "speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"wall_jump",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"wall_slide",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i4mu4"]
@@ -177,10 +187,11 @@ shape = SubResource("RectangleShape2D_6hbwq")
 [node name="CollisionShape2D-slide" type="CollisionShape2D" parent="CharacterBody2D" unique_id=369092495]
 position = Vector2(5.5, 9)
 shape = SubResource("RectangleShape2D_h4iuc")
+disabled = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=466650388]
 sprite_frames = SubResource("SpriteFrames_6hbwq")
-animation = &"idle"
+animation = &"wall_jump"
 
 [node name="Area2D" type="Area2D" parent="CharacterBody2D" unique_id=266087855]
 
